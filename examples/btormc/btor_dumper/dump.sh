@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default values
-ROOT=/home/sichaoy/GNN_DPV/yosys/boolector
+ROOT=${DPVPATH}/yosys/boolector
 BTORMC=${ROOT}/build/bin/btormc
 EXTRACT=${ROOT}/examples/btormc/btor_dumper/extractbtor.py
 OUT=data_out

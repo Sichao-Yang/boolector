@@ -1,3 +1,4 @@
 deps/
 build/
 doc/
+examples/btormc/btor_dumper/data_out
