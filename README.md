@@ -1,8 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-**This repository serves as archive for the last and final version of Boolector.**
-**Active development and maintenance has stopped.**
-**Boolector was succeeded by [Bitwuzla](https://github.com/bitwuzla/bitwuzla).**
+[![Build Status](https://dev.azure.com/Boolector/Boolector/_apis/build/status/Boolector.boolector?branchName=master)](https://dev.azure.com/Boolector/Boolector/_build/latest?definitionId=1&branchName=master)
 
 # Boolector
 

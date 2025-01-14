@@ -1,0 +1,165 @@
+set pretty print to false
+set rewrite level to: 1
+set dump to true
+[btormc] parsing input file...
+[btormc] finished parsing
+input btor sid:1, map to sid:2
+input btor nid:2, map to nid:2
+input btor nid:3, map to nid:3
+input btor sid:4, map to sid:1
+input btor sid:5, map to sid:3
+input btor nid:6, map to nid:5
+input btor nid:7, map to nid:6
+input btor nid:8, map to nid:7
+input btor nid:9, map to nid:8
+input btor nid:10, map to nid:9
+input btor nid:11, map to nid:9
+input btor nid:12, map to nid:10
+input btor nid:13, map to nid:11
+input btor nid:14, map to nid:12
+input btor nid:15, map to nid:13
+input btor nid:16, map to nid:14
+input btor nid:17, map to nid:15
+input btor nid:18, map to nid:16
+input btor nid:19, map to nid:16
+input btor nid:20, map to nid:17
+input btor nid:21, map to nid:18
+input btor nid:22, map to nid:19
+input btor nid:23, map to nid:22
+input btor nid:24, map to nid:23
+input btor nid:25, map to nid:24
+input btor nid:26, map to nid:25
+input btor nid:27, map to nid:26
+input btor nid:28, map to nid:21
+input btor nid:29, map to nid:29
+input btor nid:30, map to nid:30
+input btor nid:31, map to nid:31
+input btor nid:32, map to nid:32
+input btor nid:33, map to nid:28
+input btor nid:34, map to nid:33
+input btor nid:35, map to nid:34
+input btor nid:36, map to nid:33554432
+input btor nid:37, map to nid:33554432
+input btor nid:38, map to nid:50331648
+input btor nid:39, map to nid:117440512
+input btor nid:40, map to nid:2
+input btor nid:41, map to nid:4
+input btor nid:42, map to nid:1
+input btor nid:43, map to nid:67108864
+input btor nid:44, map to nid:1
+input btor nid:45, map to nid:100663296
+input btor nid:47, map to nid:117440512
+input btor nid:48, map to nid:3
+input btor nid:49, map to nid:4
+input btor nid:50, map to nid:1
+input btor nid:51, map to nid:150994944
+input btor nid:52, map to nid:1
+input btor nid:53, map to nid:184549376
+input btor sid:55, map to sid:4
+input btor nid:56, map to nid:35
+input btor nid:57, map to nid:35
+input btor nid:58, map to nid:12
+input btor nid:59, map to nid:36
+input btor sid:60, map to sid:5
+input btor nid:61, map to nid:37
+input btor nid:62, map to nid:38
+input btor nid:63, map to nid:38
+input btor nid:64, map to nid:7
+input btor nid:65, map to nid:34
+input btor nid:66, map to nid:38
+Node has symbol: __po_result__assert.in_gate, will be replaced with: __po_result__assert.in_gate+__po_result__gate
+input btor nid:67, map to nid:38
+Node has symbol: __po_result__assert.in_gate+__po_result__gate, will be replaced with: __po_result__assert.in_gate+__po_result__gate+__po_result__gate_d
+input btor nid:68, map to nid:39
+input btor nid:69, map to nid:39
+input btor nid:70, map to nid:7
+Node has symbol: __po_result__assert.in_gold, will be replaced with: __po_result__assert.in_gold+__po_result__gold
+input btor nid:71, map to nid:7
+Node has symbol: __po_result__assert.in_gold+__po_result__gold, will be replaced with: __po_result__assert.in_gold+__po_result__gold+__po_result__gold_d
+input btor nid:72, map to nid:39
+Node has symbol: __po_result__gate_x, will be replaced with: __po_result__gate_x+__po_result__gold_x
+input btor nid:73, map to nid:2
+input btor nid:74, map to nid:3
+input btor nid:75, map to nid:2
+input btor nid:76, map to nid:3
+input btor nid:77, map to nid:38
+Node has symbol: __po_result__assert.in_gate+__po_result__gate+__po_result__gate_d, will be replaced with: __po_result__assert.in_gate+__po_result__gate+__po_result__gate_d+gate.__po_result
+input btor nid:78, map to nid:40
+input btor nid:79, map to nid:41
+input btor nid:80, map to nid:41
+input btor nid:81, map to nid:21
+input btor nid:82, map to nid:28
+input btor nid:83, map to nid:15
+input btor nid:84, map to nid:26
+input btor nid:85, map to nid:42
+input btor nid:86, map to nid:42
+input btor nid:87, map to nid:1
+input btor nid:88, map to nid:19
+input btor nid:89, map to nid:43
+input btor nid:90, map to nid:43
+input btor nid:91, map to nid:41
+Node has symbol: gate.adder_result, will be replaced with: gate.adder_result+gate.final_adder.OUT
+input btor nid:92, map to nid:15
+input btor nid:93, map to nid:19
+input btor nid:94, map to nid:21
+Node has symbol: gate.final_adder.C0, will be replaced with: gate.final_adder.C0+gate.final_adder.m0.c
+input btor nid:95, map to nid:22
+input btor nid:96, map to nid:28
+Node has symbol: gate.final_adder.C1, will be replaced with: gate.final_adder.C1+gate.final_adder.m1.c
+input btor nid:97, map to nid:29
+input btor nid:98, map to nid:26
+input btor nid:99, map to nid:1
+input btor nid:100, map to nid:21
+Node has symbol: gate.final_adder.C0+gate.final_adder.m0.c, will be replaced with: gate.final_adder.C0+gate.final_adder.m0.c+gate.final_adder.m1.z
+input btor nid:101, map to nid:11
+input btor nid:102, map to nid:18
+input btor nid:103, map to nid:38
+Node has symbol: __po_result__assert.in_gate+__po_result__gate+__po_result__gate_d+gate.__po_result, will be replaced with: __po_result__assert.in_gate+__po_result__gate+__po_result__gate_d+gate.__po_result+gate.result
+input btor nid:104, map to nid:2
+input btor nid:105, map to nid:3
+input btor nid:106, map to nid:2
+input btor nid:107, map to nid:3
+input btor nid:108, map to nid:7
+Node has symbol: __po_result__assert.in_gold+__po_result__gold+__po_result__gold_d, will be replaced with: __po_result__assert.in_gold+__po_result__gold+__po_result__gold_d+gold.__po_result
+input btor nid:109, map to nid:7
+Node has symbol: __po_result__assert.in_gold+__po_result__gold+__po_result__gold_d+gold.__po_result, will be replaced with: __po_result__assert.in_gold+__po_result__gold+__po_result__gold_d+gold.__po_result+gold.result
+=====StartDumping=====
+2 input 2 __pi_IN1
+3 input 2 __pi_IN2
+4 zero 2
+5 concat 4 4 2
+6 concat 4 4 3
+7 mul 4 5 6 __po_result__assert.in_gold+__po_result__gold+__po_result__gold_d+gold.__po_result+gold.result
+8 slice 1 7 0 0
+9 slice 1 2 0 0
+10 concat 2 9 9
+11 and 2 3 10 gate.pp0
+12 slice 1 11 0 0
+13 eq 1 8 12
+14 slice 1 7 1 1
+15 slice 1 11 1 1 gate.final_adder.m0.a
+16 slice 1 2 1 1
+17 concat 2 16 16
+18 and 2 3 17 gate.pp1
+19 slice 1 18 0 0 gate.final_adder.m0.b
+20 and 1 -15 -19
+21 and 1 15 19 gate.final_adder.C0+gate.final_adder.m0.c+gate.final_adder.m1.z
+22 and 1 -20 -21 gate.final_adder.m0.s
+23 eq 1 14 22
+24 and 1 13 23
+25 slice 1 7 2 2
+26 slice 1 18 1 1 gate.final_adder.m1.x
+27 and 1 -21 -26
+28 and 1 21 26 gate.final_adder.C1+gate.final_adder.m1.c
+29 and 1 -27 -28 gate.final_adder.m1.s
+30 eq 1 25 29
+31 and 1 24 30
+32 slice 1 7 3 3
+33 eq 1 28 32
+34 and 1 31 33 __po_result__assert.okay
+45 bad 1 -34 __po_result__assert.okay
+1 zero 1 gate.final_adder.m1.y
+46 constraint 1 -1
+47 constraint 1 -1
+=====FinishDumping=====
+[btor>mc] deleting model checker: 2 inputs, 0 states, 1 bad, 2 constraints

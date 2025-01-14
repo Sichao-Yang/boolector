@@ -220,7 +220,7 @@ copy_sort (Btor *btor, Btor *fwd, BoolectorNode *node)
 BtorMC *
 btor_mc_new (void)
 {
-  BtorMemMgr *mm;
+  BtorMemMgr *mm;  // managing memory allocation statistics
   BtorMC *res;
   Btor *btor;
 
@@ -851,7 +851,8 @@ initialize_states_of_frame (BtorMC *mc, BoolectorNodeMap *map, BtorMCFrame *f)
       dst = boolector_nodemap_substitute_node (mc->forward, map, state->init);
       dst = boolector_copy (mc->forward, dst);
       // special case: const initialization (constant array)
-      if (boolector_is_array (btor, src) && boolector_is_const (btor, state->init))
+      if (boolector_is_array (btor, src)
+          && boolector_is_const (btor, state->init))
       {
         BoolectorSort s    = copy_sort (btor, fwd, src);
         BoolectorNode *tmp = boolector_const_array (fwd, s, dst);
@@ -1318,7 +1319,7 @@ add_simple_path_constraints (BtorMC *mc)
     boolector_assert (btor, constraint);
     boolector_release (btor, constraint);
   }
-  res = !BTOR_EMPTY_STACK(constraints);
+  res = !BTOR_EMPTY_STACK (constraints);
   BTOR_RELEASE_STACK (constraints);
   return res;
 }
@@ -1337,9 +1338,9 @@ check_last_forward_frame (BtorMC *mc)
 
   btor = mc->btor;
 
-  opt_kinduction = btor_mc_get_opt (mc, BTOR_MC_OPT_KINDUCTION) == 1;
+  opt_kinduction  = btor_mc_get_opt (mc, BTOR_MC_OPT_KINDUCTION) == 1;
   opt_simple_path = btor_mc_get_opt (mc, BTOR_MC_OPT_SIMPLE_PATH) == 1;
-  k = BTOR_COUNT_STACK (mc->frames) - 1;
+  k               = BTOR_COUNT_STACK (mc->frames) - 1;
   assert (k >= 0);
   f = mc->frames.top - 1;
   assert (f->time == k);
@@ -1408,8 +1409,7 @@ check_last_forward_frame (BtorMC *mc)
         print_witness (mc, k, i);
       }
 
-      if (btor_mc_get_opt (mc, BTOR_MC_OPT_STOP_FIRST))
-        break;
+      if (btor_mc_get_opt (mc, BTOR_MC_OPT_STOP_FIRST)) break;
     }
     else
     {

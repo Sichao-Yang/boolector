@@ -7,7 +7,9 @@
  */
 
 #include "btoropt.h"
+
 #include <limits.h>
+
 #include "boolector.h"
 #include "btorclone.h"
 #include "btorcore.h"
@@ -443,6 +445,16 @@ btor_opt_init_opts (Btor *btor)
             BTOR_BETA_REDUCE_MIN,
             BTOR_BETA_REDUCE_MAX,
             "eagerly eliminate lambda expressions");
+  init_opt (btor,
+            BTOR_AIG_TWO_LEVEL_OPT,
+            false,
+            false,
+            "aig-rewrite",
+            "rwl",
+            0,
+            0,
+            1,
+            "aig-rewrite");
   opts = btor_hashptr_table_new (
       btor->mm, (BtorHashPtr) btor_hash_str, (BtorCmpPtr) strcmpoptval);
   add_opt_help (mm, opts, "none", BTOR_BETA_REDUCE_NONE, "do not beta-reduce");
@@ -664,7 +676,7 @@ btor_opt_init_opts (Btor *btor)
                 "all",
                 BTOR_FUN_EAGER_LEMMAS_ALL,
                 "generate lemmas for all conflicts");
-  btor->options[BTOR_OPT_FUN_EAGER_LEMMAS].options  = opts;
+  btor->options[BTOR_OPT_FUN_EAGER_LEMMAS].options = opts;
 
   init_opt (btor,
             BTOR_OPT_FUN_STORE_LAMBDAS,
@@ -1204,7 +1216,7 @@ btor_opt_init_opts (Btor *btor)
                 BTOR_QUANT_SYNTH_ELMR,
                 "use enumerative learning modulo the given root constraints "
                 "to synthesize skolem functions");
-  btor->options[BTOR_OPT_QUANT_SYNTH].options        = opts;
+  btor->options[BTOR_OPT_QUANT_SYNTH].options = opts;
 
   init_opt (btor,
             BTOR_OPT_QUANT_DUAL_SOLVER,

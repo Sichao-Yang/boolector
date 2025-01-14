@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "btortypes.h"
+#include "btornode.h"
 
 #if __cplusplus
 extern "C" {

@@ -7,10 +7,10 @@ BUILDDIR=build
 
 asan=no
 ubsan=no
-debug=no
+debug=yes
 check=no
 log=no
-shared=no
+shared=yes
 prefix=
 path=
 

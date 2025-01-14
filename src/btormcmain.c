@@ -28,6 +28,25 @@
 
 /*------------------------------------------------------------------------*/
 
+char *
+concatenate (const char *str1, const char *str2)
+{
+  char *sep    = "+";
+  int len      = strlen (str1) + strlen (str2) + strlen (sep) + 1;
+  char *result = (char *) malloc (len);
+
+  if (result == NULL)
+  {
+    return NULL;  // Memory allocation failed
+  }
+
+  strcpy (result, str1);
+  strcat (result, sep);
+  strcat (result, str2);
+
+  return result;
+}
+
 static void
 print_opt (FILE *out,
            BtorMemMgr *mm,
@@ -149,10 +168,8 @@ print_help (FILE *out, BtorMC *mc)
 
   print_opt (
       out, mc->mm, "help", "h", true, 0, "print this message and exit", false);
-  print_opt (
-      out, mc->mm, "copyright", 0, true, 0, "print copyright and exit", false);
-  print_opt (
-      out, mc->mm, "version", 0, true, 0, "print version and exit", false);
+  print_opt (out, mc->mm, "copyright", 0, true, 0, "print copyright", false);
+  print_opt (out, mc->mm, "version", 0, true, 0, "print version", false);
 
   fprintf (out, "\n");
 
@@ -220,20 +237,23 @@ parse (BtorMC *mc, FILE *infile, const char *infile_name, bool checkall)
   Btor2LineIterator lit;
   Btor2Line *l;
   BoolectorNode *e[3], *n;
-  BoolectorSort s, si, se;
+  BoolectorSort s, si, se;  // 头一个是bitvec的sort，后两个是array的sorts
   Btor *btor;
   BoolectorNodePtrStack bad;
-
+  FILE *out;
+  BtorNode *btornode;  // 新加的，打印内部节点信息
+  uint32_t sid;        // 新加的，记录新造的sortid
+  char *symbol;        // 新加的，记录symbol
   verb    = btor_mc_get_opt (mc, BTOR_MC_OPT_VERBOSITY);
   res     = BTOR_MC_SUCC_EXIT;
   bfr     = btor2parser_new ();
   nodemap = 0;
   sortmap = 0;
-
+  out     = stdout;
   BTOR_INIT_STACK (mc->mm, bad);
 
   if (verb) msg ("parsing input file...");
-
+  // btor2 parse done here, everything is in bfr
   if (!btor2parser_read_lines (bfr, infile))
   {
     err = btor2parser_error (bfr);
@@ -248,19 +268,22 @@ parse (BtorMC *mc, FILE *infile, const char *infile_name, bool checkall)
   nodemap = btor_hashint_map_new (mc->mm);
   btor    = mc->btor;
 
+  FILE *fd = fopen ("error.trace", "r");
+
+  boolector_set_trapi (btor, fd);
+  // take what's in bfr and store to btor
   lit = btor2parser_iter_init (bfr);
   while ((l = btor2parser_iter_next (&lit)))
   {
     n = 0;
     s = 0;
-
     if (l->id > INT32_MAX)
     {
       res = error ("given id '%" PRId64 "' exceeds INT32_MAX", l->id);
       goto DONE;
     }
 
-    /* sort */
+    /* get sort */
     if (l->tag != BTOR2_TAG_sort && l->sort.id)
     {
       if (l->sort.id > INT32_MAX)
@@ -273,7 +296,7 @@ parse (BtorMC *mc, FILE *infile, const char *infile_name, bool checkall)
       assert (s);
     }
 
-    /* args */
+    /* get args */
     for (i = 0; i < l->nargs; i++)
     {
       long signed_arg   = l->args[i];
@@ -707,8 +730,36 @@ parse (BtorMC *mc, FILE *infile, const char *infile_name, bool checkall)
     assert (!s || !n || boolector_get_sort (btor, n) == s);
     if (n)
     {
+      btornode = (BtorNode *) (n);
+      fprintf (out, "input btor nid:%ld, map to nid:%d\n", l->id, btornode->id);
+    }
+    else if (s)
+    {
+      sid = ((uint32_t) (long) (s));
+      fprintf (out, "input btor sid:%ld, map to sid:%d\n", l->id, sid);
+    }
+    if (n)
+    {
       assert (!btor_hashint_map_contains (nodemap, l->id));
       btor_hashint_map_add (nodemap, l->id)->as_ptr = n;
+      btornode                                      = (BtorNode *) (n);
+      if ((l->symbol) && (btornode->kind != BTOR_VAR_NODE))
+      {
+        symbol = btor_node_get_symbol (btor, btornode);
+        if (symbol)
+        {
+          char *res = concatenate (symbol, l->symbol);
+          fprintf (out,
+                   "Node has symbol: %s, will be replaced with: %s\n",
+                   symbol,
+                   res);
+          boolector_set_symbol (btor, n, res);
+        }
+        else
+        {
+          boolector_set_symbol (btor, n, l->symbol);
+        }
+      }
     }
   }
   if (checkall && BTOR_COUNT_STACK (bad))
@@ -786,7 +837,6 @@ main (int32_t argc, char **argv)
   BTOR_INIT_STACK (mm, infiles);
 
   btor_optparse_parse (mm, argc, argv, &opts, &infiles, 0, 0);
-
   /* input file ======================================================= */
 
   if (BTOR_COUNT_STACK (infiles) > 1)
@@ -836,7 +886,6 @@ main (int32_t argc, char **argv)
   }
 
   /* options ========================================================== */
-
   for (i = 0; i < BTOR_COUNT_STACK (opts); i++)
   {
     po = BTOR_PEEK_STACK (opts, i);
@@ -857,17 +906,27 @@ main (int32_t argc, char **argv)
     else if (strcmp (po->name.start, "version") == 0)
     {
       fprintf (out, "%s\n", boolector_version (mc->btor));
-      return 0;
     }
     else if (strcmp (po->name.start, "d") == 0
              || strcmp (po->name.start, "dump") == 0)
     {
+      fprintf (out, "set dump to true\n");
       dump = true;
     }
     else if (strcmp (po->name.start, "ca") == 0
              || strcmp (po->name.start, "checkall") == 0)
     {
       checkall = true;
+    }
+    else if (strcmp (po->name.start, "rw") == 0)
+    {
+      fprintf (out, "set rewrite level to: %d\n", po->val);
+      boolector_set_opt (mc->btor, BTOR_OPT_REWRITE_LEVEL, po->val);
+    }
+    else if (strcmp (po->name.start, "npp") == 0)
+    {
+      fprintf (out, "set pretty print to false\n");
+      boolector_set_opt (mc->btor, BTOR_OPT_PRETTY_PRINT, 0);
     }
     /* mc options */
     else
@@ -938,7 +997,9 @@ main (int32_t argc, char **argv)
   {
     if (dump)
     {
+      fprintf (out, "=====StartDumping=====\n");
       boolector_mc_dump (mc, out);
+      fprintf (out, "=====FinishDumping=====\n");
     }
     else
     {

@@ -46,7 +46,7 @@ if is_macos; then
 
   lipo -create -output liblgl.a x86_64/liblgl.a arm64/liblgl.a
 else
-  ./configure.sh -fPIC
+  ./configure.sh -fPIC -g
   make -j${NPROC}
 fi
 install_lib liblgl.a

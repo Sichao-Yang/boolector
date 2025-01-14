@@ -8,18 +8,18 @@
 
 #include "btoraig.h"
 
+#include <assert.h>
+#include <limits.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "btorabort.h"
 #include "btorcore.h"
 #include "btorsat.h"
 #include "utils/btoraigmap.h"
 #include "utils/btorhashptr.h"
 #include "utils/btorutil.h"
-
-#include <assert.h>
-#include <limits.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 /*------------------------------------------------------------------------*/
 
@@ -47,9 +47,9 @@
 
 /*------------------------------------------------------------------------*/
 
-//#define BTOR_EXTRACT_TOP_LEVEL_MULTI_OR
+// #define BTOR_EXTRACT_TOP_LEVEL_MULTI_OR
 
-//#define BTOR_AIG_TO_CNF_TOP_ELIM
+// #define BTOR_AIG_TO_CNF_TOP_ELIM
 
 #define BTOR_AIG_TO_CNF_EXTRACT_ONLY_NON_SHARED
 
@@ -58,7 +58,6 @@
 #define BTOR_AIG_TO_CNF_EXTRACT_XOR
 
 // #define BTOR_AIG_TO_CNF_NARY_AND
-
 /*------------------------------------------------------------------------*/
 
 static void
@@ -82,7 +81,6 @@ new_and_aig (BtorAIGMgr *amgr, BtorAIG *left, BtorAIG *right)
   assert (amgr);
   assert (!btor_aig_is_const (left));
   assert (!btor_aig_is_const (right));
-
   BtorAIG *aig;
   size_t size;
 
@@ -394,7 +392,7 @@ find_and_contradiction_aig (
     return find_and_contradiction_aig (
                amgr, btor_aig_get_left_child (amgr, aig), a0, a1, calls)
            || find_and_contradiction_aig (
-                  amgr, btor_aig_get_right_child (amgr, aig), a0, a1, calls);
+               amgr, btor_aig_get_right_child (amgr, aig), a0, a1, calls);
   }
   return false;
 }
@@ -436,6 +434,48 @@ btor_aig_and (BtorAIGMgr *amgr, BtorAIG *left, BtorAIG *right)
   {
     left  = simp_aig_by_sat (amgr, left);
     right = simp_aig_by_sat (amgr, right);
+  }
+
+  if (!btor_opt_get (amgr->btor, BTOR_AIG_TWO_LEVEL_OPT))
+  {
+    if (left == BTOR_AIG_FALSE || right == BTOR_AIG_FALSE)
+      return BTOR_AIG_FALSE;
+
+    if (left == BTOR_AIG_TRUE) return inc_aig_ref_counter_and_return (right);
+
+    if (right == BTOR_AIG_TRUE || (left == right))
+      return inc_aig_ref_counter_and_return (left);
+    if (left == BTOR_INVERT_AIG (right)) return BTOR_AIG_FALSE;
+    real_left  = BTOR_REAL_ADDR_AIG (left);
+    real_right = BTOR_REAL_ADDR_AIG (right);
+    lookup     = find_and_aig (amgr, left, right);
+    assert (lookup);
+    res = *lookup ? btor_aig_get_by_id (amgr, *lookup) : 0;
+    if (!res)
+    {
+      if (amgr->table.num_elements == amgr->table.size
+          && btor_util_log_2 (amgr->table.size) < BTOR_AIG_UNIQUE_TABLE_LIMIT)
+      {
+        enlarge_aig_nodes_unique_table (amgr);
+        lookup = find_and_aig (amgr, left, right);
+      }
+      if (btor_opt_get (amgr->btor, BTOR_OPT_SORT_AIG) > 0
+          && real_right->id < real_left->id)
+      {
+        BTOR_SWAP (BtorAIG *, left, right);
+      }
+      res     = new_and_aig (amgr, left, right);
+      *lookup = res->id;
+      inc_aig_ref_counter (left);
+      inc_aig_ref_counter (right);
+      assert (amgr->table.num_elements < INT32_MAX);
+      amgr->table.num_elements++;
+    }
+    else
+    {
+      inc_aig_ref_counter (res);
+    }
+    return res;
   }
 
   calls = 0;
@@ -535,12 +575,12 @@ BTOR_AIG_TWO_LEVEL_OPT_TRY_AGAIN:
              == btor_aig_get_left_child (amgr, real_right)
          && btor_aig_get_right_child (amgr, real_left)
                 == BTOR_INVERT_AIG (
-                       btor_aig_get_right_child (amgr, real_right)))
+                    btor_aig_get_right_child (amgr, real_right)))
         || (btor_aig_get_left_child (amgr, real_left)
                 == btor_aig_get_right_child (amgr, real_right)
             && btor_aig_get_right_child (amgr, real_left)
                    == BTOR_INVERT_AIG (
-                          btor_aig_get_left_child (amgr, real_right))))
+                       btor_aig_get_left_child (amgr, real_right))))
       return inc_aig_ref_counter_and_return (
           BTOR_INVERT_AIG (btor_aig_get_left_child (amgr, real_left)));
   }
@@ -556,7 +596,7 @@ BTOR_AIG_TWO_LEVEL_OPT_TRY_AGAIN:
                 == btor_aig_get_left_child (amgr, real_left)
             && btor_aig_get_left_child (amgr, real_right)
                    == BTOR_INVERT_AIG (
-                          btor_aig_get_right_child (amgr, real_left))))
+                       btor_aig_get_right_child (amgr, real_left))))
       return inc_aig_ref_counter_and_return (
           BTOR_INVERT_AIG (btor_aig_get_right_child (amgr, real_right)));
   }

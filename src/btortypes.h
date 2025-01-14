@@ -855,6 +855,7 @@ enum BtorOption
   BTOR_OPT_QUANT_FIXSYNTH,
   BTOR_OPT_RW_ZERO_LOWER_SLICE,
   BTOR_OPT_NONDESTR_SUBST,
+  BTOR_AIG_TWO_LEVEL_OPT,
   /* this MUST be the last entry! */
   BTOR_OPT_NUM_OPTS,
 };
@@ -993,7 +994,7 @@ typedef enum BtorOptBetaReduceMode BtorOptBetaReduceMode;
 struct BtorAbortCallback
 {
   void (*abort_fun) (const char* msg);
-  void *cb_fun;   /* abort callback function */
+  void* cb_fun; /* abort callback function */
 };
 typedef struct BtorAbortCallback BtorAbortCallback;
 

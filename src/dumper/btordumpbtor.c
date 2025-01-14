@@ -7,6 +7,7 @@
  */
 
 #include "btordumpbtor.h"
+
 #include "btorbv.h"
 #include "btorcore.h"
 #include "btorexp.h"
@@ -520,12 +521,14 @@ bdcnode (BtorDumpContext *bdc, BtorNode *node, FILE *file)
              " %d %d",
              btor_node_bv_slice_get_upper (node),
              btor_node_bv_slice_get_lower (node));
-  else if (btor_node_is_bv_var (node) || btor_node_is_uf (node)
-           || btor_node_is_param (node))
-  {
-    symbol = btor_node_get_symbol (bdc->btor, node);
-    if (symbol) fprintf (file, " %s", symbol);
-  }
+  // else if (btor_node_is_bv_var (node) || btor_node_is_uf (node)
+  //          || btor_node_is_param (node))
+  // {
+  //   symbol = btor_node_get_symbol (bdc->btor, node);
+  //   if (symbol) fprintf (file, " %s", symbol);
+  // }
+  symbol = btor_node_get_symbol (bdc->btor, node);
+  if (symbol) fprintf (file, " %s", symbol);
 DONE:
   fputc ('\n', file);
 }
@@ -766,10 +769,13 @@ btor_dumpbtor_dump_bdc (BtorDumpContext *bdc, FILE *file)
     bdcrec (bdc, node, file);
     id = ++bdc->maxid;
     fprintf (file,
-             "%d bad %u %d\n",
+             "%d bad %u %d",
              id,
              btor_node_bv_get_width (bdc->btor, node),
              bdcid (bdc, node));
+    if ((symbol = btor_node_get_symbol (bdc->btor, node)))
+      fprintf (file, " %s", symbol);
+    fputc ('\n', file);
   }
 
   for (i = 0; i < BTOR_COUNT_STACK (bdc->constraints); i++)
@@ -878,7 +884,13 @@ btor_dumpbtor_dump (Btor *btor, FILE *file, uint32_t version)
       btor_dumpbtor_add_root_to_dump_context (bdc,
                                               btor_iter_hashptr_next (&it));
   }
-
+  uint32_t i;
+  printf ("Count Outputs %ld\n", BTOR_COUNT_STACK (btor->outputs));
+  for (i = 0; i < BTOR_COUNT_STACK (btor->outputs); i++)
+  {
+    BtorNode *output = BTOR_PEEK_STACK (btor->outputs, i);
+    btor_dumpbtor_add_output_to_dump_context (bdc, output);
+  }
   btor_dumpbtor_dump_bdc (bdc, file);
   btor_dumpbtor_delete_dump_context (bdc);
 }

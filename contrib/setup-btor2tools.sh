@@ -31,7 +31,7 @@ if is_macos; then
    make -j${NPROC}
    popd
 else
-  CFLAGS="-fPIC" ./configure.sh --static
+  CFLAGS="-fPIC" ./configure.sh --static -g
   pushd build
   make -j${NPROC}
   popd
