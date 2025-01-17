@@ -28,7 +28,7 @@
 #include "preprocess/btorpreprocess.h"
 #include "utils/btorhashptr.h"
 #include "utils/btorutil.h"
-
+#include "btornode.h"
 /*------------------------------------------------------------------------*/
 
 #include <limits.h>

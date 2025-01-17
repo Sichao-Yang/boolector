@@ -11,6 +11,7 @@
 #include <limits.h>
 
 #include "boolectormc.h"
+#include "btornode.h"
 #include "btor2parser.h"
 #include "btormc.h"
 #include "utils/btorhashint.h"
