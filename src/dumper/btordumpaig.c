@@ -108,7 +108,7 @@ dumpaig_dump_aux (Btor *btor,
     btor_opt_set (btor, BTOR_OPT_FUN_LAZY_SYNTHESIZE, lazy_synthesize);
     if (merge_roots) BTOR_PUSH_STACK (roots, merged);
   }
-  printf("BTOR_COUNT_STACK(amgr->id2aig): %u\n", BTOR_COUNT_STACK(amgr->id2aig));
+  printf("BTOR_COUNT_STACK(amgr->id2aig): %lu\n", BTOR_COUNT_STACK(amgr->id2aig));
   BTOR_PUSH_STACK_IF (BTOR_EMPTY_STACK (roots), roots, BTOR_AIG_TRUE);
 
   btor_dumpaig_dump_seq (amgr,
@@ -180,6 +180,7 @@ btor_dumpaig_dump (Btor *btor, bool is_binary, FILE *output, bool merge_roots)
   /* print nodes marked as outputs in BTOR2 */
   if (BTOR_COUNT_STACK (btor->outputs))
   {
+    printf("BTOR_COUNT_STACK (btor->outputs): %lu\n", BTOR_COUNT_STACK(btor->outputs));
     dumpaig_dump_aux (btor,
                       btor->outputs.start,
                       BTOR_COUNT_STACK (btor->outputs),

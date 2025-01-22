@@ -6,17 +6,17 @@
  *  See COPYING for more information on using this software.
  */
 
+#include <assert.h>
+#include <inttypes.h>
+#include <limits.h>
 #include "btor2parser.h"
+#include "btornode.h"
 #include "btormsg.h"
 #include "btorparse.h"
 #include "btortypes.h"
 #include "utils/btorhashint.h"
 #include "utils/btormem.h"
 #include "utils/btorutil.h"
-
-#include <assert.h>
-#include <inttypes.h>
-#include <limits.h>
 
 /*------------------------------------------------------------------------*/
 
@@ -87,6 +87,24 @@ delete_btor2_parser (BtorBTOR2Parser *parser)
   BTOR_DELETE (mm, parser);
   btor_mem_mgr_delete (mm);
 }
+char *
+concatenate (const char *str1, const char *str2)
+{
+  char *sep    = "+";
+  int len      = strlen (str1) + strlen (str2) + strlen (sep) + 1;
+  char *result = (char *) malloc (len);
+
+  if (result == NULL)
+  {
+    return NULL;  // Memory allocation failed
+  }
+
+  strcpy (result, str1);
+  strcat (result, sep);
+  strcat (result, str2);
+
+  return result;
+}
 
 static const char *
 parse_btor2_parser (BtorBTOR2Parser *parser,
@@ -114,6 +132,8 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
   BtorMemMgr *mm;
   BtorMsg *msg;
   Btor *btor;
+  BtorNode *btornode;
+  char *symbol;
   bool found_arrays, found_lambdas;
 
   btor = parser->btor;
@@ -125,7 +145,7 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
 
   mm = parser->mm;
 
-  found_arrays = false;
+  found_arrays  = false;
   found_lambdas = false;
 
   nodemap = 0;
@@ -159,8 +179,10 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
 
     if (line->id > INT32_MAX)
     {
-      perr_btor2 (
-          parser, line->id, "given id '%" PRId64 "' exceeds INT32_MAX", line->id);
+      perr_btor2 (parser,
+                  line->id,
+                  "given id '%" PRId64 "' exceeds INT32_MAX",
+                  line->id);
       goto DONE;
     }
 
@@ -302,7 +324,7 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
           node = boolector_var (btor, sort, line->symbol);
         else
         {
-          node = boolector_array (btor, sort, line->symbol);
+          node         = boolector_array (btor, sort, line->symbol);
           found_arrays = true;
         }
         boolector_set_btor_id (btor, node, line->id);
@@ -453,8 +475,10 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
           assert (j);
           if (j > INT32_MAX)
           {
-            perr_btor2 (
-                parser, line->id, "given id '%" PRId64 "' exceeds INT32_MAX", j);
+            perr_btor2 (parser,
+                        line->id,
+                        "given id '%" PRId64 "' exceeds INT32_MAX",
+                        j);
             goto DONE;
           }
           assert (btor_hashint_map_contains (sortmap, j));
@@ -465,8 +489,10 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
           assert (j);
           if (j > INT32_MAX)
           {
-            perr_btor2 (
-                parser, line->id, "given id '%" PRId64 "' exceeds INT32_MAX", j);
+            perr_btor2 (parser,
+                        line->id,
+                        "given id '%" PRId64 "' exceeds INT32_MAX",
+                        j);
             goto DONE;
           }
           assert (btor_hashint_map_contains (sortmap, j));
@@ -584,12 +610,9 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
         break;
 
       default:
-        assert (line->tag == BTOR2_TAG_bad
-             || line->tag == BTOR2_TAG_fair
-             || line->tag == BTOR2_TAG_init
-             || line->tag == BTOR2_TAG_justice
-             || line->tag == BTOR2_TAG_next
-             || line->tag == BTOR2_TAG_state);
+        assert (line->tag == BTOR2_TAG_bad || line->tag == BTOR2_TAG_fair
+                || line->tag == BTOR2_TAG_init || line->tag == BTOR2_TAG_justice
+                || line->tag == BTOR2_TAG_next || line->tag == BTOR2_TAG_state);
         perr_btor2 (parser,
                     line->id,
                     "model checking extensions not supported by boolector, try "
@@ -601,6 +624,24 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
     {
       assert (!btor_hashint_map_contains (nodemap, line->id));
       btor_hashint_map_add (nodemap, line->id)->as_ptr = node;
+      btornode                                         = (BtorNode *) (node);
+      if ((line->symbol) && (btornode->kind != BTOR_VAR_NODE))
+      {
+        symbol = btor_node_get_symbol (btor, btornode);
+        if (symbol)
+        {
+          char *res = concatenate (symbol, line->symbol);
+          fprintf (stdout,
+                   "Node has symbol: %s, will be replaced with: %s\n",
+                   symbol,
+                   res);
+          boolector_set_symbol (btor, node, res);
+        }
+        else
+        {
+          boolector_set_symbol (btor, node, line->symbol);
+        }
+      }
     }
   }
 DONE:
