@@ -98,6 +98,28 @@ compare_int_ptr (const void *p1, const void *p2)
 }
 
 void
+create_symbol_with_slice (Btor *btor,
+                          BtorNode *result,
+                          char *symb,
+                          BtorSlice *s1)
+{
+  char temp[32];
+  char *tmp_str, *symb_res;
+  if (s1->upper == s1->lower) {
+      snprintf(temp, sizeof(temp), "[%d]", s1->upper);
+  } else {
+      snprintf(temp, sizeof(temp), "[%d:%d]", s1->upper, s1->lower);
+  }
+  tmp_str  = strdup (temp);
+  symb_res = concatenate (symb, tmp_str, "");
+  btor_node_set_symbol (btor, result, symb_res);
+  BTORLOG (2, "  create new var: %s", btor_util_node2string (result));
+
+  free (tmp_str);  // Free intermediate string
+  return;
+}
+
+void
 btor_eliminate_slices_on_bv_vars (Btor *btor)
 {
   BtorNode *var, *cur, *result, *lambda_var, *temp;
@@ -112,7 +134,7 @@ btor_eliminate_slices_on_bv_vars (Btor *btor)
   double start, delta;
   BtorMemMgr *mm;
   uint32_t vals[4];
-
+  char *symb;
   assert (btor != NULL);
 
   start = btor_util_time_stamp ();
@@ -135,7 +157,8 @@ btor_eliminate_slices_on_bv_vars (Btor *btor)
   {
     slices = btor_hashptr_table_new (
         mm, (BtorHashPtr) hash_slice, (BtorCmpPtr) compare_slices);
-    var = BTOR_POP_STACK (vars);
+    var  = BTOR_POP_STACK (vars);
+    symb = btor_node_get_symbol (btor, var);
     BTORLOG (2,
              "process %s (%s)",
              btor_util_node2string (var),
@@ -163,7 +186,12 @@ btor_eliminate_slices_on_bv_vars (Btor *btor)
         /* full slices should have been eliminated by rewriting */
         assert (s1->upper - s1->lower + 1 < btor_node_bv_get_width (btor, var));
         btor_hashptr_table_add (slices, s1);
-        BTORLOG (2, "  found slice %u %u", s1->upper, s1->lower);
+        BTORLOG (2,
+                 "  found slice %u %u for node: %s (%s)",
+                 s1->upper,
+                 s1->lower,
+                 btor_util_node2string (cur),
+                 btor_util_node2string (btor_node_get_simplified (btor, cur)));
       }
     }
 
@@ -287,6 +315,7 @@ btor_eliminate_slices_on_bv_vars (Btor *btor)
     s1     = sorted_slices[slices->count - 1];
     sort   = btor_sort_bv (btor, s1->upper - s1->lower + 1);
     result = btor_exp_var (btor, sort, 0);
+    if (symb) create_symbol_with_slice (btor, result, symb, s1);
     btor_sort_release (btor, sort);
     delete_slice (btor, s1);
     for (i = (int32_t) slices->count - 2; i >= 0; i--)
@@ -294,6 +323,7 @@ btor_eliminate_slices_on_bv_vars (Btor *btor)
       s1         = sorted_slices[i];
       sort       = btor_sort_bv (btor, s1->upper - s1->lower + 1);
       lambda_var = btor_exp_var (btor, sort, 0);
+      if (symb) create_symbol_with_slice (btor, lambda_var, symb, s1);
       btor_sort_release (btor, sort);
       temp = btor_exp_bv_concat (btor, result, lambda_var);
       btor_node_release (btor, result);

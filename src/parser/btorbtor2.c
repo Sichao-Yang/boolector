@@ -9,9 +9,11 @@
 #include <assert.h>
 #include <inttypes.h>
 #include <limits.h>
+
 #include "btor2parser.h"
-#include "btornode.h"
+#include "btorlog.h"
 #include "btormsg.h"
+#include "btornode.h"
 #include "btorparse.h"
 #include "btortypes.h"
 #include "utils/btorhashint.h"
@@ -86,24 +88,6 @@ delete_btor2_parser (BtorBTOR2Parser *parser)
   btor_mem_freestr (mm, parser->error);
   BTOR_DELETE (mm, parser);
   btor_mem_mgr_delete (mm);
-}
-char *
-concatenate (const char *str1, const char *str2)
-{
-  char *sep    = "+";
-  int len      = strlen (str1) + strlen (str2) + strlen (sep) + 1;
-  char *result = (char *) malloc (len);
-
-  if (result == NULL)
-  {
-    return NULL;  // Memory allocation failed
-  }
-
-  strcpy (result, str1);
-  strcat (result, sep);
-  strcat (result, str2);
-
-  return result;
 }
 
 static const char *
@@ -630,8 +614,8 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
         symbol = btor_node_get_symbol (btor, btornode);
         if (symbol)
         {
-          char *res = concatenate (symbol, line->symbol);
-          fprintf (stdout,
+          char *res = concatenate (symbol, line->symbol, "+");
+          BTORLOG (2,
                    "Node has symbol: %s, will be replaced with: %s\n",
                    symbol,
                    res);
@@ -642,6 +626,7 @@ parse_btor2_parser (BtorBTOR2Parser *parser,
           boolector_set_symbol (btor, node, line->symbol);
         }
       }
+      BTORLOG (2, "created node: %s", btor_util_node2string (btornode));
     }
   }
 DONE:

@@ -141,7 +141,7 @@ btor_simplify (Btor *btor)
 
     if (btor->varsubst_constraints->count || btor->embedded_constraints->count)
       continue;
-
+    // by default: disabled
     if (btor_opt_get (btor, BTOR_OPT_UCOPT)
         && btor_opt_get (btor, BTOR_OPT_REWRITE_LEVEL) > 2
         && !btor_opt_get (btor, BTOR_OPT_INCREMENTAL)

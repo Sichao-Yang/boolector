@@ -8,12 +8,12 @@
 
 #include "utils/btorutil.h"
 
+#include <assert.h>
+#include <limits.h>
+
 #include "btorcore.h"
 #include "dumper/btordumpbtor.h"
 #include "utils/btorstack.h"
-
-#include <assert.h>
-#include <limits.h>
 #ifndef NDEBUG
 #include <float.h>
 #endif
@@ -651,19 +651,26 @@ btor_util_node2string (BtorNode *exp)
                btor_node_bv_slice_get_upper (exp),
                btor_node_bv_slice_get_lower (exp));
   }
-  else if ((btor_node_is_bv_var (real_exp) || btor_node_is_uf (real_exp)
-            || btor_node_is_param (real_exp))
-           && (tmp = btor_node_get_symbol (btor, real_exp)))
-  {
-    new_len += strlen (tmp) + 1;
-    BUFCONCAT (strbuf, cur_len, new_len, " %s", tmp);
-  }
+  // else if ((btor_node_is_bv_var (real_exp) || btor_node_is_uf (real_exp)
+  //           || btor_node_is_param (real_exp))
+  //          && (tmp = btor_node_get_symbol (btor, real_exp)))
+  // {
+  //   new_len += strlen (tmp) + 1;
+  //   BUFCONCAT (strbuf, cur_len, new_len, " %s", tmp);
+  // }
   else if (btor_node_is_bv_const (exp))
   {
     bits = btor_bv_to_char (btor->mm, btor_node_bv_const_get_bits (real_exp));
     new_len += strlen (bits) + 1;
     BUFCONCAT (strbuf, cur_len, new_len, " %s", bits);
     btor_mem_freestr (btor->mm, bits);
+  }
+
+  tmp = btor_node_get_symbol (btor, real_exp);
+  if (tmp)
+  {
+    new_len += strlen (tmp) + 1;
+    BUFCONCAT (strbuf, cur_len, new_len, " %s", tmp);
   }
 
   assert (cur_len == strlen (strbuf));
@@ -701,4 +708,27 @@ btor_util_getenv_value (BtorMemMgr *mm, const char *lname)
   res = getenv (uname.start);
   BTOR_RELEASE_STACK (uname);
   return res;
+}
+
+char *
+concatenate (const char *str1, const char *str2, const char *sep)
+{
+  if (!sep) sep = "+";  // Default separator is "+" if sep is NULL
+
+  int len      = strlen (str1) + strlen (str2) + strlen (sep) + 1;
+  char *result = (char *) malloc (len);
+
+  if (result == NULL)
+  {
+    return NULL;  // Memory allocation failed
+  }
+
+  strcpy (result, str1);
+  if (*sep)
+  {  // Only concatenate separator if it's not empty string
+    strcat (result, sep);
+  }
+  strcat (result, str2);
+
+  return result;
 }

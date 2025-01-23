@@ -11,9 +11,9 @@
 #include <limits.h>
 
 #include "boolectormc.h"
-#include "btornode.h"
 #include "btor2parser.h"
 #include "btormc.h"
+#include "btornode.h"
 #include "utils/btorhashint.h"
 #include "utils/btormem.h"
 #include "utils/btoroptparse.h"
@@ -28,25 +28,6 @@
 #define BTOR_MC_ERR_EXIT 1
 
 /*------------------------------------------------------------------------*/
-
-char *
-concatenate (const char *str1, const char *str2)
-{
-  char *sep    = "+";
-  int len      = strlen (str1) + strlen (str2) + strlen (sep) + 1;
-  char *result = (char *) malloc (len);
-
-  if (result == NULL)
-  {
-    return NULL;  // Memory allocation failed
-  }
-
-  strcpy (result, str1);
-  strcat (result, sep);
-  strcat (result, str2);
-
-  return result;
-}
 
 static void
 print_opt (FILE *out,
@@ -749,7 +730,7 @@ parse (BtorMC *mc, FILE *infile, const char *infile_name, bool checkall)
         symbol = btor_node_get_symbol (btor, btornode);
         if (symbol)
         {
-          char *res = concatenate (symbol, l->symbol);
+          char *res = concatenate (symbol, l->symbol, "+");
           fprintf (out,
                    "Node has symbol: %s, will be replaced with: %s\n",
                    symbol,

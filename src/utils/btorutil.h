@@ -9,12 +9,12 @@
 #ifndef BTORUTIL_H_INCLUDED
 #define BTORUTIL_H_INCLUDED
 
-#include "btortypes.h"
-#include "utils/btormem.h"
-
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdint.h>
+
+#include "btortypes.h"
+#include "utils/btormem.h"
 
 /*------------------------------------------------------------------------*/
 
@@ -88,5 +88,5 @@ char *btor_util_node2string (BtorNode *);
 char *btor_util_getenv_value (BtorMemMgr *mm, const char *name);
 
 /*------------------------------------------------------------------------*/
-
+char *concatenate (const char *str1, const char *str2, const char *sep);
 #endif
