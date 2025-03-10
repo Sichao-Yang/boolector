@@ -580,6 +580,7 @@ btor_substitute_and_rebuild (Btor *btor, BtorPtrHashTable *substs)
         assert (btor_node_is_regular (cur_parent));
         ispushed = true;
         BTOR_PUSH_STACK (stack, cur_parent);
+        // BTORLOG (2, "  cone: %s -- %s", btor_util_node2string (cur), btor_util_node2string (cur_parent));
       }
       /* Alwas rebuild param nodes of binders if non-destructive substitution
        * is enabled. */
@@ -590,6 +591,7 @@ btor_substitute_and_rebuild (Btor *btor, BtorPtrHashTable *substs)
       if (!ispushed)
       {
         BTOR_PUSH_STACK (root_stack, btor_node_copy (btor, cur));
+        BTORLOG (2, "  pushed to root_stack");
       }
     }
   } while (!BTOR_EMPTY_STACK (stack));
