@@ -9,8 +9,8 @@ asan=no
 ubsan=no
 debug=yes
 check=no
-log=yes
-shared=yes
+log=no
+shared=no
 prefix=
 path=
 
@@ -19,7 +19,7 @@ gmp=no
 testing=unknown
 
 lingeling=unknown
-minisat=unknown
+minisat=yes
 picosat=unknown
 cadical=unknown
 cms=unknown

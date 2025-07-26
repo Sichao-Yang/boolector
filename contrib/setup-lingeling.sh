@@ -15,7 +15,7 @@ source "$(dirname "$0")/setup-utils.sh"
 LINGELING_DIR=${DEPS_DIR}/lingeling
 COMMIT_ID="7d5db72420b95ab356c98ca7f7a4681ed2c59c70"
 
-download_github "arminbiere/lingeling" "$COMMIT_ID" "$LINGELING_DIR"
+# download_github "arminbiere/lingeling" "$COMMIT_ID" "$LINGELING_DIR"
 cd "${LINGELING_DIR}"
 
 if is_windows; then
@@ -33,20 +33,20 @@ if is_macos; then
   if test -f makefile; then
     make clean
   fi
-  ./configure.sh -fPIC -arch x86_64
+  ./configure.sh -fPIC --debug -arch x86_64
   make -j${NPROC}
   mkdir -p x86_64
   cp liblgl.a x86_64
 
   make clean
-  ./configure.sh -fPIC -arch arm64
+  ./configure.sh -fPIC --debug -arch arm64
   make -j${NPROC}
   mkdir -p arm64
   cp liblgl.a arm64
 
   lipo -create -output liblgl.a x86_64/liblgl.a arm64/liblgl.a
 else
-  ./configure.sh -fPIC -g
+  ./configure.sh -fPIC --debug
   make -j${NPROC}
 fi
 install_lib liblgl.a

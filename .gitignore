@@ -1,4 +1,3 @@
-deps/
-build/
-doc/
+build
+install
 examples/btormc/btor_dumper/data_out

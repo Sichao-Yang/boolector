@@ -1,5 +1,24 @@
+=============== this project is forked for study only ===============
+
+make:
+```
+./contrib/setup-minisat.sh
+./contrib/setup-btor2tools.sh
+./configure.sh -g --only-minisat
+cd build
+make -j8
+```
+notice: 
+- i have made changes on these configure files to set debug compilation as default.
+- i have also modified a friend function declaration bug in [solvertypes.h](./deps/minisat/minisat/core/SolverTypes.h) at line 51 and 64.
+
+the following is the original readme:
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://dev.azure.com/Boolector/Boolector/_apis/build/status/Boolector.boolector?branchName=master)](https://dev.azure.com/Boolector/Boolector/_build/latest?definitionId=1&branchName=master)
+
+**This repository serves as archive for the last and final version of Boolector.**
+**Active development and maintenance has stopped.**
+**Boolector was succeeded by [Bitwuzla](https://github.com/bitwuzla/bitwuzla).**
 
 # Boolector
 
@@ -85,7 +104,7 @@ cd boolector
 ./contrib/setup-btor2tools.sh
 
 # Build Boolector
-./configure.sh && cd build && make
+./configure.sh -g && cd build && make -j8
 ```
 
 All binaries (boolector, btormc, btormbt, btoruntrace) are generated into

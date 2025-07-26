@@ -15,7 +15,7 @@ source "$(dirname "$0")/setup-utils.sh"
 BTOR2TOOLS_DIR=${DEPS_DIR}/btor2tools
 COMMIT_ID="037f1fa88fb439dca6f648ad48a3463256d69d8b"
 
-download_github "boolector/btor2tools" "$COMMIT_ID" "$BTOR2TOOLS_DIR"
+# download_github "boolector/btor2tools" "$COMMIT_ID" "$BTOR2TOOLS_DIR"
 cd "${BTOR2TOOLS_DIR}"
 
 if is_windows; then
