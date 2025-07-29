@@ -215,3 +215,11 @@ By making a contribution to this project, I certify that:
     maintained indefinitely and may be redistributed consistent with
     this project or the open source license(s) involved.
 ```
+
+## About this Fork
+
+This is a community-maintained fork of [PyBoolector](https://github.com/original-author/pyboolector), 
+which was archived by the original maintainers. It includes bugfixes and updates for Python 3.x compatibility.
+
+Maintainer: Hosein Hadipour <hosein.hadipour@gmail.com>
+License: Same as original (MIT/BSD/etc.)
