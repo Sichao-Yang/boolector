@@ -1274,7 +1274,11 @@ cdef class Boolector:
                 Parameter ``width`` is only required if ``c`` is an integer.
         """
         cdef BoolectorConstNode r
-        if isinstance(c, int) or (sys.version < '3' and isinstance(c, long)):
+        try:
+            long
+        except NameError:
+            long = int  # define `long` for Python 3
+        if isinstance(c, int) or isinstance(c, long):
             if c != 0 and c.bit_length() > width:
                 raise BoolectorException(
                           "Value of constant {} (bit width {}) exceeds bit "\
