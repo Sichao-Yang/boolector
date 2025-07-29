@@ -713,12 +713,19 @@ parse (BtorMC *mc, FILE *infile, const char *infile_name, bool checkall)
     if (n)
     {
       btornode = (BtorNode *) (n);
-      fprintf (out, "input btor nid:%ld, map to nid:%d\n", l->id, btornode->id);
+      if (btor_opt_get (btor, BTOR_OPT_VERBOSITY) >= 10)
+      {
+        fprintf (
+            out, "btor fileid:%ld, map to memid:%d\n", l->id, btornode->id);
+      }
     }
     else if (s)
     {
       sid = ((uint32_t) (long) (s));
-      fprintf (out, "input btor sid:%ld, map to sid:%d\n", l->id, sid);
+      if (btor_opt_get (btor, BTOR_OPT_VERBOSITY) >= 10)
+      {
+        fprintf (out, "btor fileid:%ld, map to memid:%d\n", l->id, sid);
+      }
     }
     if (n)
     {
