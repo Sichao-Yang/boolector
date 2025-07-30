@@ -1033,7 +1033,8 @@ initialize_new_forward_frame (BtorMC *mc)
       boolector_set_opt (mc->forward, BTOR_OPT_VERBOSITY, v);
   }
 
-  BTOR_INIT_STACK (mc->mm, f->init);
+  BTOR_INIT_STACK (
+      mc->mm, f->init);  // init stack是一直没用的，因为state的init会被替换掉
 
   map = boolector_nodemap_new (mc->forward);
 

@@ -22,7 +22,7 @@ typedef struct BtorSATMgr BtorSATMgr;
 
 struct BtorSATMgr
 {
-  /* Note: direct solver reference for PicoSAT, wrapper object for for
+  /* Note: direct solver reference for PicoSAT, wrapper object for
    *	   Lingeling (BtorLGL) and MiniSAT (BtorMiniSAT). */
   void *solver;
   Btor *btor;
