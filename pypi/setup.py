@@ -65,18 +65,18 @@ CLASSIFIERS = [
 ]
 
 setup(
-  name='PyBoolector',
+  name='pyboolector3',
   version=version,
-  maintainer = "Matthew Ballance",
-  maintainer_email = "matt.ballance@gmail.com",
+  maintainer = "Hosein Hadipour",
+  maintainer_email = "hosein.hadipour@gmail.com",
   description = ("Python wrapper around the Boolector SMT solver"),
   long_description="""
     This package, specifically, enables the Boolector Python wrapper
     to be installed from PyPi
   """,
   licenses = ["MIT License"],
-  download_url="https://pypi.org/project/PyBoolector/",
-  url="https://github.com/boolector/boolector",
+  url="https://github.com/hadipourh/pyboolector3",
+  # download_url="https://pypi.org/project/pyboolector3/",
   setup_requires=[
     'setuptools_scm',
     'cython'
